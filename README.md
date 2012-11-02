@@ -1,4 +1,4 @@
-# collectd-puppet-reports
+># collectd-puppet-reports
 
 collectd module to gather metrics from puppet reports.
 
@@ -16,7 +16,7 @@ collectd module to gather metrics from puppet reports.
 </LoadPlugin>
 
 <Plugin python>
-  <Module puppet-reports>
+  <Module puppet_reports>
     ReportsDir "/var/lib/puppet/reports"
   </Module>
 </Plugin>
