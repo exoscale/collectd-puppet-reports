@@ -11,9 +11,8 @@ collectd module to gather metrics from puppet reports.
 ## Configuration
 
 ```
-<LoadPlugin python>
-    Globals true
-</LoadPlugin>
+
+LoadPlugin python
 
 <Plugin python>
   <Module puppet_reports>

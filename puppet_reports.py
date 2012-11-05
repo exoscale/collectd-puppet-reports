@@ -6,7 +6,9 @@ import os
 
 NAME = 'puppet_reports'
 
-DEFAULT_REPORTS_DIR = '/var/lib/puppet/reports'
+class PuppetReportsConfig
+  reports_dir = '/var/lib/puppet/reports'
+  verbose = false
 
 def compute_log_metrics(data):
   return {'log_info': len(filter(lambda x: x['level'] == 'info', data)),
@@ -50,12 +52,12 @@ def map_value(node):
 def read_callback():
   yaml.add_multi_constructor("!", identity)
   logger('verb', "starting run")
-  for report_dir in os.listdir(REPORTS_DIR):
+  for report_dir in os.listdir(PuppetReportsConfig.reports_dir):
     logger('verb', "parsing: %s" % report_dir)
-    reports_dir = os.listdir(REPORTS_DIR + '/' + report_dir)
+    reports_dir = os.listdir(PuppetReportsConfig.reports_dir + '/' + report_dir)
     reports_dir.sort
     last_report = reports_dir[-1]
-    last_report_file = REPORTS_DIR + '/' + report_dir + '/' + last_report
+    last_report_file = PuppetReportsConfig.reports_dir + '/' + report_dir + '/' + last_report
     with open(last_report_file, "r") as stream:
       data = yaml.load(stream)
       data = map_value(data)
@@ -70,17 +72,12 @@ def read_callback():
         val.dispatch()
 
 def configure_callback(conf):
-  global REPORTS_DIR, VERBOSE_LOGGING
-
   yaml.add_multi_constructor("!", identity)
   logger('verb', "configuring")
 
-  REPORTS_DIR = DEFAULT_REPORTS_DIR
-  VERBOSE_LOGGING = False
-
   for node in conf.children:
     if node.key == 'ReportsDir':
-      REPORTS_DIR = node.values[0]
+      PuppetReportsConfig.reports_dir = node.values[0]
     else:
       logger('verb', "unknown config key in puppet module: %s" % node.key)
     
@@ -91,7 +88,7 @@ def logger(t, msg):
     elif t == 'warn':
         collectd.warning('%s: %s' % (NAME, msg))
     elif t == 'verb':
-        if VERBOSE_LOGGING:
+        if PuppetReportsConfig.verbose:
             collectd.info('%s: %s' % (NAME, msg))
     else:
         collectd.notice('%s: %s' % (NAME, msg))
