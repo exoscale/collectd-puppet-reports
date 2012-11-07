@@ -8,7 +8,7 @@ NAME = 'puppet_reports'
 
 class PuppetReportsConfig:
   reports_dir = '/var/lib/puppet/reports'
-  verbose = false
+  verbose = False
 
 def compute_log_metrics(data):
   return {'log_info': len(filter(lambda x: x['level'] == 'info', data)),
