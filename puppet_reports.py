@@ -18,7 +18,7 @@ def compute_log_metrics(data):
 
 def tridict(prefix, data):
   dicts = map(lambda x: {(prefix + '_' + x[0]): x[2]}, data)
-  return reduce(lambda x,y: dict(x, **y), dicts)
+  return reduce(lambda x,y: dict(x, **y), dicts, initializer={})
 
 def compute_metrics(data):
   h = {'configuration_version': data['configuration_version']}
@@ -35,7 +35,7 @@ def identity(loader, suffix, node):
 def map_value(node):
   if isinstance(node,yaml.nodes.MappingNode):
     dicts = map(lambda x: dict({map_value(x[0]): map_value(x[1])}), node.value)
-    h = reduce(lambda e1,e2: dict(e1, **e2), dicts)
+    h = reduce(lambda e1,e2: dict(e1, **e2), dicts, {})
     return h
   elif isinstance(node,yaml.nodes.SequenceNode):
     return map(map_value, node.value)
