@@ -11,22 +11,31 @@ class PuppetReportsConfig:
   verbose = False
 
 def compute_log_metrics(data):
-  return {'log_info': len(filter(lambda x: x['level'] == 'info', data)),
-          'log_notice': len(filter(lambda x: x['level'] == 'notice', data)),
-          'log_warning': len(filter(lambda x: x['level'] == 'warning', data)),
-          'log_error': len(filter(lambda x: x['level'] == 'error', data))}
+  return {'log_info': len(filter(lambda x: safe_get(x, ['level'], '') == 'info', data)),
+          'log_notice': len(filter(lambda x: safe_get(x, ['level'], '') == 'notice', data)),
+          'log_warning': len(filter(lambda x: safe_get(x, ['level'], '') == 'warning', data)),
+          'log_error': len(filter(lambda x: safe_get(x, ['level'], '') == 'error', data))}
 
 def tridict(prefix, data):
   dicts = map(lambda x: {(prefix + '_' + x[0]): x[2]}, data)
   return reduce(lambda x,y: dict(x, **y), dicts, {})
 
+def safe_get(data, path, default):
+  res = data
+  for el in path:
+    if res.has_key(el):
+      res = res[el]
+    else:
+      return default
+  return res
+  
 def compute_metrics(data):
-  h = {'configuration_version': data['configuration_version']}
-  h.update(compute_log_metrics(data['logs']))
-  h.update(tridict('changes', data['metrics']['changes']['values']))
-  h.update(tridict('events', data['metrics']['events']['values']))
-  h.update(tridict('resources', data['metrics']['resources']['values']))
-  h.update(tridict('time', data['metrics']['time']['values']))
+  h = {'configuration_version': safe_get(data, ['configuration_version'], 0)}
+  h.update(compute_log_metrics(safe_get(data, ['logs'], [])))
+  h.update(tridict('changes', safe_get(data, ['metrics', 'changes', 'values'], {})))
+  h.update(tridict('events', safe_get(data, ['metrics', 'events', 'values'], {})))
+  h.update(tridict('resources', safe_get(data, ['metrics', 'resources', 'values'], {})))
+  h.update(tridict('time', safe_get(data, ['metrics', 'time', 'values'], {})))
   return h
 
 def identity(loader, suffix, node):
