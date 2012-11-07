@@ -18,7 +18,7 @@ def compute_log_metrics(data):
 
 def tridict(prefix, data):
   dicts = map(lambda x: {(prefix + '_' + x[0]): x[2]}, data)
-  return reduce(lambda x,y: dict(x, **y), dicts, initializer={})
+  return reduce(lambda x,y: dict(x, **y), dicts, {})
 
 def compute_metrics(data):
   h = {'configuration_version': data['configuration_version']}
