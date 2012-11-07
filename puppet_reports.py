@@ -30,7 +30,7 @@ def safe_get(data, path, default):
   return res
   
 def compute_metrics(data):
-  h = {'configuration_version': safe_get(data, ['configuration_version'], 0)}
+  h = {'configuration_version': safe_get(data, ['configuration_version'], "0")}
   h.update(compute_log_metrics(safe_get(data, ['logs'], [])))
   h.update(tridict('changes', safe_get(data, ['metrics', 'changes', 'values'], {})))
   h.update(tridict('events', safe_get(data, ['metrics', 'events', 'values'], {})))
@@ -78,10 +78,10 @@ def read_callback():
         val.plugin_instance = report_dir
         val.type_instance = k
         try:
-          logger('warn', ("value %s => %s for %s cannot be parsed to float" % (k, results[k], reports_dir)))
           val.values = [ float(results[k]) ]
         except:
-          val.values = 0.0
+          logger('warn', ("value %s => %s for %s cannot be parsed to float" % (k, results[k], report_dir)))
+          val.values = [ 0.0 ]
         val.dispatch()
 
 def configure_callback(conf):
