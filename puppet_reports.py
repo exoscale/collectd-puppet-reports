@@ -77,7 +77,11 @@ def read_callback():
         val = collectd.Values(plugin=NAME, type='counter')
         val.plugin_instance = report_dir
         val.type_instance = k
-        val.values = [ float(results[k]) ]
+        try:
+          logger('warn', ("value %s => %s for %s cannot be parsed to float" % (k, results[k], reports_dir)))
+          val.values = [ float(results[k]) ]
+        except:
+          val.values = 0.0
         val.dispatch()
 
 def configure_callback(conf):
