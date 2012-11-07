@@ -6,7 +6,7 @@ import os
 
 NAME = 'puppet_reports'
 
-class PuppetReportsConfig
+class PuppetReportsConfig:
   reports_dir = '/var/lib/puppet/reports'
   verbose = false
 
