@@ -30,7 +30,7 @@ def safe_get(data, path, default):
   return res
   
 def compute_metrics(data):
-  h = {'configuration_version': safe_get(data, ['configuration_version'], "0")}
+  h = {}
   h.update(compute_log_metrics(safe_get(data, ['logs'], [])))
   h.update(tridict('changes', safe_get(data, ['metrics', 'changes', 'values'], {})))
   h.update(tridict('events', safe_get(data, ['metrics', 'events', 'values'], {})))
