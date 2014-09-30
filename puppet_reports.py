@@ -91,6 +91,8 @@ def configure_callback(conf):
   for node in conf.children:
     if node.key == 'ReportsDir':
       PuppetReportsConfig.reports_dir = node.values[0]
+    elif node.key == 'Verbose':
+      PuppetReportsConfig.verbose = True
     else:
       logger('verb', "unknown config key in puppet module: %s" % node.key)
     
