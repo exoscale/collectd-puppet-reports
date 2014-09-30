@@ -74,7 +74,7 @@ def read_callback():
       logger('verb', "ready to send")
       for k in results:
         logger('verb', ("pushing value for %s => %s = %s" % (report_dir, k, results[k])))
-        val = collectd.Values(plugin=NAME, type='counter')
+        val = collectd.Values(plugin=NAME, type='gauge')
         val.plugin_instance = report_dir
         val.type_instance = k
         try:
